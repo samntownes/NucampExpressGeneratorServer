@@ -5,31 +5,15 @@ var logger = require("morgan");
 const config = require("./config");
 const passport = require("passport");
 
-var indexRouter = require("./routes/index");
+//var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 const campsiteRouter = require("./routes/campsiteRouter");
 const promotionRouter = require("./routes/promotionRouter");
 const partnerRouter = require("./routes/partnerRouter");
 const uploadRouter = require("./routes/uploadRouter");
 
-const mongoose = require("mongoose");
-
-const url = config.mongoUrl;
-const connect = mongoose.connect(url, {
-  useCreateIndex: true,
-  useFindAndModify: false,
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-});
-
 var app = express();
 
-connect.then(
-  () => console.log("Connected correctly to server"),
-  err => console.log(err)
-);
-
-// Secure traffic only
 app.all("*", (req, res, next) => {
   if (req.secure) {
     return next();
@@ -44,6 +28,23 @@ app.all("*", (req, res, next) => {
   }
 });
 
+const mongoose = require("mongoose");
+
+const url = config.mongoUrl;
+const connect = mongoose.connect(url, {
+  useCreateIndex: true,
+  useFindAndModify: false,
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
+
+connect.then(
+  () => console.log("Connected correctly to server"),
+  err => console.log(err)
+);
+
+// Secure traffic only
+
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
@@ -55,7 +56,7 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use(passport.initialize());
 
-app.use("/", indexRouter);
+//app.use("/", indexRouter);
 app.use("/users", usersRouter);
 
 app.use(express.static(path.join(__dirname, "public")));
